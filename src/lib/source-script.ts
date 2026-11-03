@@ -149,6 +149,11 @@ function buildEmptyRegistry(): SourceScriptRegistry {
 }
 
 async function loadRegistry(): Promise<SourceScriptRegistry> {
+  // Browser-only storage has no server database for source scripts.
+  if ((process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage') === 'localstorage') {
+    return buildEmptyRegistry();
+  }
+
   if (_registryCache && Date.now() - _registryCache.ts < REGISTRY_CACHE_TTL_MS) {
     return _registryCache.data;
   }
