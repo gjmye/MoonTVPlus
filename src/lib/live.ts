@@ -68,7 +68,10 @@ export async function getCachedLiveChannels(
       return null;
     }
     liveInfo.channelNumber = channelNum;
-    await db.saveAdminConfig(config);
+    // localstorage mode has no server-side database; keep channel metadata in memory.
+    if ((process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage') !== 'localstorage') {
+      await db.saveAdminConfig(config);
+    }
   }
   return cachedLiveChannels[key] || null;
 }
